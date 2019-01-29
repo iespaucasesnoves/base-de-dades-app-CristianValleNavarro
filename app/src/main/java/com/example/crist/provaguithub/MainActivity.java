@@ -10,15 +10,14 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends ListActivity {
-
     private ListAdapter adapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,20 +26,21 @@ public class MainActivity extends ListActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // En fer onClick a un element de la llista cridam l'activity d'edició i passam la clau primària
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String s = ((TextView) view.findViewById(R.id.idVins)).getText().toString();
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                String s = ((TextView) view.findViewById(R.id.id)).getText().toString();
                 Intent in=new Intent(getApplicationContext(),EditaVi.class);
                 in.putExtra("ID", s);
                 startActivity(in);
             }
         });
-        Button btNou = findViewById(R.id.botonLista);
+        Button btNou=(Button) findViewById(R.id.nouBtn);
         btNou.setOnClickListener(
                 // Cridam l'activity d'edició indicant que es un insert (clau primària en blanc per exemple)
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent in=new Intent(getApplicationContext(),EditaVi.class);
+                        Intent in=new Intent(getApplicationContext(),AfegirVi.class);
                         in.putExtra("ID", "");
                         startActivity(in);
                     }
@@ -55,9 +55,9 @@ public class MainActivity extends ListActivity {
         bd.open();
         // Obtenim tots els vins
         List<Vi> llistaVins = bd.getAllVi();
-        ArrayList<HashMap<String, String>> llista = new ArrayList<>();
+        ArrayList<HashMap<String, String>> llista = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < llistaVins.size(); i++) {
-            HashMap<String, String> map = new HashMap<>();
+            HashMap<String, String> map = new HashMap<String, String>();
             Vi vi = llistaVins.get(i);
             map.put("id", String.valueOf(vi.getId()));
             map.put("nomVi", vi.getNomVi());
@@ -68,9 +68,9 @@ public class MainActivity extends ListActivity {
         //Tanquem la BD
         bd.close();
         //Assignar a la listview
-        adapter = new SimpleAdapter(MainActivity.this, llista, R.layout.llistavins,
+        adapter = new SimpleAdapter(MainActivity.this, llista,R.layout.llistavins,
                 new String[]{"id", "nomVi", "data", "tipus"},
-                new int[]{R.id.idVins, R.id.nomVi, R.id.data, R.id.tipus});
+                new int[]{R.id.id, R.id.nomVi, R.id.data, R.id.tipus});
         setListAdapter(adapter);
     }
     @Override
@@ -78,6 +78,5 @@ public class MainActivity extends ListActivity {
         super.onResume();
         mostraVins();
     }
-
-
 }
+
