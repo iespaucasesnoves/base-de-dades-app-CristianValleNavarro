@@ -19,6 +19,7 @@ public class DataSourceVi {
             HelperVi.COLUMN_VALOLFATIVA, HelperVi.COLUMN_VALGUSTATIVA,
             HelperVi.COLUMN_VALVISUAL, HelperVi.COLUMN_NOTA, HelperVi.COLUMN_FOTO,
             HelperVi.COLUMN_TIPUS};
+    private String[] tipusColumn = {HelperVi.COLUMN__TIPUS};
 
     public DataSourceVi(Context context) { //CONSTRUCTOR
         dbAjuda = new HelperVi(context);
@@ -96,7 +97,6 @@ public class DataSourceVi {
         cursor.close();
         return vi;
     }
-
     public List<Vi> getAllVi() {
         List<Vi> vins = new ArrayList<Vi>();
         Cursor cursor = database.query(HelperVi.TABLE_VI, allColumnsVi, null, null, null, null,
@@ -111,7 +111,20 @@ public class DataSourceVi {
         cursor.close();
         return vins;
     }
-
+    public List<String> getAllTipus() {
+        List<String> tipus = new ArrayList<String>();
+        Cursor cursorT = database.query(HelperVi.TABLE_TIPUS, tipusColumn, null, null, null, null,
+                HelperVi.COLUMN__TIPUS + " DESC");
+        cursorT.moveToFirst();
+        while (!cursorT.isAfterLast()) {
+            String t = cursorT.getString(0);
+            tipus.add(t);
+            cursorT.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursorT.close();
+        return tipus;
+    }
     private Vi cursorToVi(Cursor cursor) {
         Vi v = new Vi();
         v.setId(cursor.getLong(0));
@@ -122,13 +135,14 @@ public class DataSourceVi {
         v.setData(cursor.getString(5));
         v.setComentari(cursor.getString(6));
         v.setIdBodega(cursor.getLong(7));
-        v.setIdBodega(cursor.getLong(8));
+        v.setIdDenominacio(cursor.getLong(8));
         v.setPreu(cursor.getFloat(9));
         v.setValOlfativa(cursor.getString(10));
         v.setValGustativa(cursor.getString(11));
         v.setValVisual(cursor.getString(12));
         v.setNota(cursor.getInt(13));
         v.setFoto(cursor.getString(14));
+        v.setTipus(cursor.getString(15));
         return v;
     }
 }
